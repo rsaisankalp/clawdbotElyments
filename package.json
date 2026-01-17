@@ -1,0 +1,16 @@
+{
+  "name": "@clawdbot/elyments",
+  "version": "2026.1.15",
+  "type": "module",
+  "description": "Clawdbot Elyments channel plugin",
+  "clawdbot": {
+    "extensions": ["./index.ts"]
+  },
+  "dependencies": {
+    "@xmpp/client": "0.14.0",
+    "ws": "8.17.0"
+  },
+  "devDependencies": {
+    "@types/ws": "8.5.10"
+  }
+}
