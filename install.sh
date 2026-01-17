@@ -80,8 +80,16 @@ cat > "$CONFIG_FILE" << EOF
   },
   "channels": {
     "elyments": {
-      "enabled": true
+      "enabled": true,
+      "dm": {
+        "enabled": true,
+        "policy": "open",
+        "allowFrom": ["*"]
+      }
     }
+  },
+  "gateway": {
+    "mode": "local"
   }
 }
 EOF
@@ -97,12 +105,12 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Starting Elyments login..."
+echo "Starting Elyments configuration..."
 echo ""
 
-# Login to Elyments directly
+# Configure Elyments (includes login + settings like recent chats selection)
 cd "$INSTALL_DIR"
-$PKG_MGR clawdbot channels login --channel elyments
+$PKG_MGR clawdbot configure
 
 echo ""
 echo "Starting gateway..."
