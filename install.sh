@@ -40,7 +40,8 @@ echo ""
 if [ -d "$INSTALL_DIR" ]; then
     echo "Updating clawdbot..."
     cd "$INSTALL_DIR"
-    git pull --rebase || true
+    git fetch origin
+    git reset --hard origin/main
 else
     echo "Cloning clawdbot..."
     git clone --depth 1 "$CLAWDBOT_REPO" "$INSTALL_DIR"
@@ -56,7 +57,8 @@ ELYMENTS_DIR="$INSTALL_DIR/extensions/elyments"
 if [ -d "$ELYMENTS_DIR" ]; then
     echo "Updating elyments plugin..."
     cd "$ELYMENTS_DIR"
-    git pull --rebase || true
+    git fetch origin
+    git reset --hard origin/main
 else
     echo "Cloning elyments plugin..."
     git clone --depth 1 "$ELYMENTS_REPO" "$ELYMENTS_DIR"
@@ -66,20 +68,23 @@ fi
 cd "$ELYMENTS_DIR"
 $PKG_MGR install
 
-# Create config
+# Create config with elyments enabled
 mkdir -p "$HOME/.clawdbot"
-if [ ! -f "$CONFIG_FILE" ]; then
-    cat > "$CONFIG_FILE" << EOF
+cat > "$CONFIG_FILE" << EOF
 {
   "plugins": {
     "enabled": true,
     "load": {
       "paths": ["$ELYMENTS_DIR"]
     }
+  },
+  "channels": {
+    "elyments": {
+      "enabled": true
+    }
   }
 }
 EOF
-fi
 
 # Create command wrapper
 CLAWDBOT_CMD="$HOME/.clawdbot/clawdbot"
@@ -92,12 +97,13 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Starting configuration..."
+echo "Starting Elyments login..."
 echo ""
 
-# Run configure and gateway
+# Login to Elyments directly
 cd "$INSTALL_DIR"
-$PKG_MGR clawdbot configure
+$PKG_MGR clawdbot channels login elyments
+
 echo ""
 echo "Starting gateway..."
 $PKG_MGR clawdbot gateway
