@@ -105,11 +105,18 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Starting Elyments login..."
+echo "Step 1: Configure AI model..."
+echo ""
+
+# Configure AI model (select provider and enter API key)
+cd "$INSTALL_DIR"
+$PKG_MGR clawdbot agents add main
+
+echo ""
+echo "Step 2: Login to Elyments..."
 echo ""
 
 # Login to Elyments (config already has open DM policy)
-cd "$INSTALL_DIR"
 $PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
