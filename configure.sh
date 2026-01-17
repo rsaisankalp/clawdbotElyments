@@ -1,5 +1,6 @@
 #!/bin/bash
 # Clawdbot Configuration Utility
+# Runs the official clawdbot configure wizard
 # Usage: curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
 
 set -e
