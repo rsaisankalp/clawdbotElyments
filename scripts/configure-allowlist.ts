@@ -11,7 +11,7 @@ import * as readline from "node:readline";
 const HOME = process.env.HOME || "";
 const CONFIG_FILE = path.join(HOME, ".clawdbot/clawdbot.json");
 const SESSION_FILE = path.join(HOME, ".clawdbot/credentials/elyments/session.json");
-const ELYMENTS_CHAT_API = "https://chat.elyments.com/inboxDetails/v2";
+const ELYMENTS_CHAT_API = "https://chatapi.elyments.com/api/inboxDetails/v2";
 
 interface RecentChat {
   jid: string;
