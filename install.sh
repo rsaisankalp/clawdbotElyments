@@ -131,7 +131,7 @@ $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 echo ""
 echo "=== Step 1: Google Antigravity Login ==="
 if [ -f "$AUTH_FILE" ] && grep -q "google-antigravity" "$AUTH_FILE" 2>/dev/null; then
-    echo "Google Antigravity already configured, skipping..."
+    echo "Google Antigravity already configured."
 else
     echo ""
     $PKG_MGR clawdbot models auth login --provider google-antigravity </dev/tty || {
@@ -141,7 +141,16 @@ else
 fi
 
 echo ""
-echo "=== Step 2: Setting default model ==="
+echo "=== Step 2: Additional Antigravity Accounts (optional) ==="
+echo ""
+# Run the auth accounts configuration script (add more accounts, set rotation order)
+cd "$ELYMENTS_DIR"
+npx tsx scripts/configure-auth-accounts.ts </dev/tty || {
+    echo "Note: Additional accounts configuration skipped."
+}
+
+echo ""
+echo "=== Step 3: Setting default model ==="
 $PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash || {
     echo "Error: Failed to set default model."
     exit 1
@@ -149,7 +158,7 @@ $PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/ge
 
 # Check if Elyments is already logged in
 echo ""
-echo "=== Step 3: Elyments Login ==="
+echo "=== Step 4: Elyments Login ==="
 if ls "$HOME/.clawdbot/credentials/elyments"* &>/dev/null; then
     echo "Elyments already logged in, skipping..."
 else
@@ -161,7 +170,7 @@ else
 fi
 
 echo ""
-echo "=== Step 4: Select contacts for allowlist ==="
+echo "=== Step 5: Select contacts for allowlist ==="
 echo ""
 # Run the allowlist configuration script
 cd "$ELYMENTS_DIR"
@@ -170,12 +179,12 @@ npx tsx scripts/configure-allowlist.ts </dev/tty || {
 }
 
 echo ""
-echo "=== Step 5: Configuring DM policy ==="
+echo "=== Step 6: Configuring DM policy ==="
 $PKG_MGR clawdbot config set channels.elyments.dm.policy open || true
 $PKG_MGR clawdbot config set channels.elyments.dm.enabled true || true
 
 echo ""
-echo "=== Step 6: Starting Gateway ==="
+echo "=== Step 7: Starting Gateway ==="
 echo ""
 
 # Kill any existing gateway (multiple methods for reliability)
