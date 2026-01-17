@@ -1,6 +1,6 @@
-import type { ChannelOutboundAdapter } from "../../../src/channels/plugins/types.adapters.js";
-import { chunkMarkdownText } from "../../../src/auto-reply/chunk.js";
-import { missingTargetError } from "../../../src/infra/outbound/target-errors.js";
+import type { ChannelOutboundAdapter } from "clawdbot/dist/channels/plugins/types.adapters.js";
+import { chunkMarkdownText } from "clawdbot/dist/auto-reply/chunk.js";
+import { missingTargetError } from "clawdbot/dist/infra/outbound/target-errors.js";
 import {
   sendMessageElyments,
   normalizeElymentsTarget,

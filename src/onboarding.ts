@@ -4,8 +4,8 @@ import type {
   ChannelOnboardingConfigureContext,
   ChannelOnboardingResult,
   ChannelOnboardingStatus,
-} from "../../../src/channels/plugins/onboarding-types.js";
-import type { RuntimeEnv } from "../../../src/runtime.js";
+} from "clawdbot/dist/channels/plugins/onboarding-types.js";
+import type { RuntimeEnv } from "clawdbot/dist/runtime.js";
 import { requestOtp, verifyOtp } from "./elyments/auth.js";
 import {
   elymentsCredentialsExist,

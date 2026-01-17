@@ -1,4 +1,4 @@
-import type { RuntimeEnv } from "../../../../src/runtime.js";
+import type { RuntimeEnv } from "clawdbot/dist/runtime.js";
 import type { CoreConfig, ElymentsInboundMessage } from "../types.js";
 import {
   ElymentsClient,
@@ -9,29 +9,29 @@ import { resolveElymentsAccount, getElymentsSenderName } from "./accounts.js";
 import { elymentsCredentialsExist, loadElymentsSession } from "./credentials.js";
 import { isElymentsGroup, extractUserId } from "./xmpp.js";
 import type { XmppMessageEvent } from "./xmpp.js";
-import { loadConfig } from "../../../../src/config/config.js";
-import { resolveAgentRoute } from "../../../../src/routing/resolve-route.js";
-import { formatAgentEnvelope } from "../../../../src/auto-reply/envelope.js";
-import { finalizeInboundContext } from "../../../../src/auto-reply/reply/inbound-context.js";
-import { dispatchReplyFromConfig } from "../../../../src/auto-reply/reply/dispatch-from-config.js";
-import { createReplyDispatcherWithTyping } from "../../../../src/auto-reply/reply/reply-dispatcher.js";
-import { resolveStorePath, updateLastRoute } from "../../../../src/config/sessions.js";
-import { enqueueSystemEvent } from "../../../../src/infra/system-events.js";
-import { logVerbose, shouldLogVerbose, danger } from "../../../../src/globals.js";
-import { getChildLogger } from "../../../../src/logging.js";
-import { chunkMarkdownText, resolveTextChunkLimit } from "../../../../src/auto-reply/chunk.js";
+import { loadConfig } from "clawdbot/dist/config/config.js";
+import { resolveAgentRoute } from "clawdbot/dist/routing/resolve-route.js";
+import { formatAgentEnvelope } from "clawdbot/dist/auto-reply/envelope.js";
+import { finalizeInboundContext } from "clawdbot/dist/auto-reply/reply/inbound-context.js";
+import { dispatchReplyFromConfig } from "clawdbot/dist/auto-reply/reply/dispatch-from-config.js";
+import { createReplyDispatcherWithTyping } from "clawdbot/dist/auto-reply/reply/reply-dispatcher.js";
+import { resolveStorePath, updateLastRoute } from "clawdbot/dist/config/sessions.js";
+import { enqueueSystemEvent } from "clawdbot/dist/infra/system-events.js";
+import { logVerbose, shouldLogVerbose, danger } from "clawdbot/dist/globals.js";
+import { getChildLogger } from "clawdbot/dist/logging.js";
+import { chunkMarkdownText, resolveTextChunkLimit } from "clawdbot/dist/auto-reply/chunk.js";
 import {
   buildMentionRegexes,
   matchesMentionPatterns,
-} from "../../../../src/auto-reply/reply/mentions.js";
-import { hasControlCommand } from "../../../../src/auto-reply/command-detection.js";
-import { shouldHandleTextCommands } from "../../../../src/auto-reply/commands-registry.js";
-import { resolveCommandAuthorizedFromAuthorizers } from "../../../../src/channels/command-gating.js";
+} from "clawdbot/dist/auto-reply/reply/mentions.js";
+import { hasControlCommand } from "clawdbot/dist/auto-reply/command-detection.js";
+import { shouldHandleTextCommands } from "clawdbot/dist/auto-reply/commands-registry.js";
+import { resolveCommandAuthorizedFromAuthorizers } from "clawdbot/dist/channels/command-gating.js";
 import {
   readChannelAllowFromStore,
   upsertChannelPairingRequest,
-} from "../../../../src/pairing/pairing-store.js";
-import { resolveEffectiveMessagesConfig, resolveHumanDelayConfig } from "../../../../src/agents/identity.js";
+} from "clawdbot/dist/pairing/pairing-store.js";
+import { resolveEffectiveMessagesConfig, resolveHumanDelayConfig } from "clawdbot/dist/agents/identity.js";
 import { sendMessageElyments, sendTypingElyments } from "./send.js";
 
 export type MonitorElymentsOpts = {

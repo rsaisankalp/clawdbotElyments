@@ -4,10 +4,9 @@
 
 set -e
 
-INSTALL_DIR="${CLAWDBOT_DIR:-$HOME/.clawdbot-src}"
+ELYMENTS_DIR="$HOME/.clawdbot/extensions/elyments"
 ELYMENTS_REPO="https://github.com/rsaisankalp/clawdbotElyments.git"
-CLAWDBOT_REPO="https://github.com/clawdbot/clawdbot.git"
-CONFIG_DIR="$HOME/.clawdbot"
+CONFIG_FILE="$HOME/.clawdbot/clawdbot.json"
 
 echo "Installing Clawdbot with Elyments plugin..."
 echo ""
@@ -23,37 +22,19 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
-# Check for pnpm or npm
-if command -v pnpm &> /dev/null; then
-    PKG_MGR="pnpm"
-elif command -v npm &> /dev/null; then
-    PKG_MGR="npm"
-else
-    echo "Error: pnpm or npm is required."
+if ! command -v npm &> /dev/null; then
+    echo "Error: npm is required."
     exit 1
 fi
 
-echo "Using package manager: $PKG_MGR"
-echo "Install directory: $INSTALL_DIR"
-echo ""
+# Install clawdbot globally via npm
+echo "Installing clawdbot..."
+npm i -g clawdbot
 
-# Clone or update clawdbot
-if [ -d "$INSTALL_DIR" ]; then
-    echo "Updating existing clawdbot installation..."
-    cd "$INSTALL_DIR"
-    git pull --rebase || true
-else
-    echo "Cloning clawdbot..."
-    git clone --depth 1 "$CLAWDBOT_REPO" "$INSTALL_DIR"
-    cd "$INSTALL_DIR"
-fi
-
-# Install clawdbot dependencies
-echo "Installing clawdbot dependencies..."
-$PKG_MGR install
+# Create extensions directory
+mkdir -p "$HOME/.clawdbot/extensions"
 
 # Clone or update elyments plugin
-ELYMENTS_DIR="$INSTALL_DIR/extensions/elyments"
 if [ -d "$ELYMENTS_DIR" ]; then
     echo "Updating elyments plugin..."
     cd "$ELYMENTS_DIR"
@@ -66,15 +47,11 @@ fi
 
 # Install elyments dependencies
 echo "Installing elyments dependencies..."
-$PKG_MGR install
-
-# Create config directory
-mkdir -p "$CONFIG_DIR"
+npm install
 
 # Create or update config to include elyments plugin
-CONFIG_FILE="$CONFIG_DIR/clawdbot.json"
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo "Creating default config..."
+    echo "Creating config..."
     cat > "$CONFIG_FILE" << EOF
 {
   "plugins": {
@@ -90,49 +67,22 @@ else
     if ! grep -q "elyments" "$CONFIG_FILE" 2>/dev/null; then
         echo ""
         echo "Note: Config exists at $CONFIG_FILE"
-        echo "Add elyments plugin path to plugins.load.paths:"
+        echo "Please add elyments plugin path to plugins.load.paths:"
         echo "  $ELYMENTS_DIR"
         echo ""
     fi
 fi
 
-# Create clawdbot command wrapper
-CLAWDBOT_CMD="$CONFIG_DIR/clawdbot"
-cat > "$CLAWDBOT_CMD" << EOF
-#!/bin/bash
-cd "$INSTALL_DIR" && pnpm clawdbot "\$@"
-EOF
-chmod +x "$CLAWDBOT_CMD"
-
 echo ""
 echo "Installation complete!"
 echo ""
 
-# Add to PATH hint
-if [[ ":$PATH:" != *":$CONFIG_DIR:"* ]]; then
-    echo "Add to your PATH (add to ~/.zshrc or ~/.bashrc):"
-    echo "  export PATH=\"\$HOME/.clawdbot:\$PATH\""
-    echo ""
-fi
-
 # Run configure
-echo "Starting Elyments configuration..."
+echo "Starting configuration..."
 echo ""
-cd "$INSTALL_DIR" && $PKG_MGR clawdbot configure
+clawdbot configure
 
-# Ask if user wants to start gateway
+# Start gateway
 echo ""
-echo "Configuration complete!"
-echo ""
-read -p "Start gateway now? (y/n) " -n 1 -r
-echo ""
-
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "Starting gateway..."
-    cd "$INSTALL_DIR" && $PKG_MGR clawdbot gateway
-else
-    echo ""
-    echo "To start gateway later, run:"
-    echo "  ~/.clawdbot/clawdbot gateway"
-    echo ""
-fi
+echo "Starting gateway..."
+clawdbot gateway
