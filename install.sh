@@ -4,11 +4,12 @@
 
 set -e
 
-INSTALL_DIR="${CLAWDBOT_DIR:-$HOME/.clawdbot-dev}"
+INSTALL_DIR="${CLAWDBOT_DIR:-$HOME/.clawdbot-src}"
 ELYMENTS_REPO="https://github.com/rsaisankalp/clawdbotElyments.git"
 CLAWDBOT_REPO="https://github.com/clawdbot/clawdbot.git"
+CONFIG_DIR="$HOME/.clawdbot"
 
-echo "🦞 Installing Clawdbot with Elyments plugin..."
+echo "Installing Clawdbot with Elyments plugin..."
 echo ""
 
 # Check for required tools
@@ -67,10 +68,11 @@ fi
 echo "Installing elyments dependencies..."
 $PKG_MGR install
 
-# Create config if not exists
-CONFIG_FILE="$HOME/.clawdbot/clawdbot.json"
-mkdir -p "$HOME/.clawdbot"
+# Create config directory
+mkdir -p "$CONFIG_DIR"
 
+# Create or update config to include elyments plugin
+CONFIG_FILE="$CONFIG_DIR/clawdbot.json"
 if [ ! -f "$CONFIG_FILE" ]; then
     echo "Creating default config..."
     cat > "$CONFIG_FILE" << EOF
@@ -84,37 +86,53 @@ if [ ! -f "$CONFIG_FILE" ]; then
 }
 EOF
 else
-    echo "Config exists at $CONFIG_FILE"
-    echo "Add this to enable elyments plugin:"
-    echo ""
-    echo '  "plugins": {'
-    echo '    "enabled": true,'
-    echo '    "load": {'
-    echo "      \"paths\": [\"$ELYMENTS_DIR\"]"
-    echo '    }'
-    echo '  }'
+    # Check if elyments is already in config
+    if ! grep -q "elyments" "$CONFIG_FILE" 2>/dev/null; then
+        echo ""
+        echo "Note: Config exists at $CONFIG_FILE"
+        echo "Add elyments plugin path to plugins.load.paths:"
+        echo "  $ELYMENTS_DIR"
+        echo ""
+    fi
 fi
 
-# Create alias script
-ALIAS_SCRIPT="$INSTALL_DIR/clawdbot.sh"
-cat > "$ALIAS_SCRIPT" << EOF
+# Create clawdbot command wrapper
+CLAWDBOT_CMD="$CONFIG_DIR/clawdbot"
+cat > "$CLAWDBOT_CMD" << EOF
 #!/bin/bash
 cd "$INSTALL_DIR" && pnpm clawdbot "\$@"
 EOF
-chmod +x "$ALIAS_SCRIPT"
+chmod +x "$CLAWDBOT_CMD"
 
 echo ""
-echo "✅ Installation complete!"
+echo "Installation complete!"
 echo ""
-echo "To run clawdbot:"
-echo "  $ALIAS_SCRIPT"
+
+# Add to PATH hint
+if [[ ":$PATH:" != *":$CONFIG_DIR:"* ]]; then
+    echo "Add to your PATH (add to ~/.zshrc or ~/.bashrc):"
+    echo "  export PATH=\"\$HOME/.clawdbot:\$PATH\""
+    echo ""
+fi
+
+# Run configure
+echo "Starting Elyments configuration..."
 echo ""
-echo "Or add alias to your shell:"
-echo "  echo 'alias clawdbot-dev=\"$ALIAS_SCRIPT\"' >> ~/.zshrc"
+cd "$INSTALL_DIR" && $PKG_MGR clawdbot configure
+
+# Ask if user wants to start gateway
 echo ""
-echo "Next steps:"
-echo "  1. Run: $ALIAS_SCRIPT configure"
-echo "  2. Select Channels → Elyments"
-echo "  3. Login with OTP"
-echo "  4. Run: $ALIAS_SCRIPT gateway"
+echo "Configuration complete!"
 echo ""
+read -p "Start gateway now? (y/n) " -n 1 -r
+echo ""
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Starting gateway..."
+    cd "$INSTALL_DIR" && $PKG_MGR clawdbot gateway
+else
+    echo ""
+    echo "To start gateway later, run:"
+    echo "  ~/.clawdbot/clawdbot gateway"
+    echo ""
+fi
