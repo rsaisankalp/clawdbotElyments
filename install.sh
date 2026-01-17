@@ -119,27 +119,38 @@ $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 # Reconnect stdin to terminal for interactive prompts (needed when piped through curl)
 exec < /dev/tty
 
-echo ""
-echo "Step 1: Setting up AI model (Google Antigravity)..."
-echo ""
+# Check if Google Antigravity is already configured
+ANTIGRAVITY_AUTH=$(ls "$HOME/.clawdbot/agents/main/agent/auth-profiles.json" 2>/dev/null && grep -q "google-antigravity" "$HOME/.clawdbot/agents/main/agent/auth-profiles.json" 2>/dev/null && echo "yes" || echo "no")
 
-# Login to Google Antigravity (this shows the plugin provider)
-$PKG_MGR clawdbot models auth login --provider google-antigravity --set-default
+if [ "$ANTIGRAVITY_AUTH" = "no" ]; then
+    echo ""
+    echo "Step 1: Setting up AI model (Google Antigravity)..."
+    echo ""
+    $PKG_MGR clawdbot models auth login --provider google-antigravity --set-default
+else
+    echo ""
+    echo "Step 1: Google Antigravity already configured, skipping..."
+fi
 
-echo ""
-echo "Step 2: Logging into Elyments..."
-echo ""
+# Check if Elyments is already logged in
+ELYMENTS_CREDS=$(ls "$HOME/.clawdbot/credentials/elyments"* 2>/dev/null | head -1)
 
-# Login to Elyments channel
-$PKG_MGR clawdbot channels login --channel elyments
+if [ -z "$ELYMENTS_CREDS" ]; then
+    echo ""
+    echo "Step 2: Logging into Elyments..."
+    echo ""
+    $PKG_MGR clawdbot channels login --channel elyments
+else
+    echo ""
+    echo "Step 2: Elyments already logged in, skipping..."
+fi
 
 echo ""
 echo "Step 3: Ensuring DM policy is set to 'open'..."
-echo ""
 
-# Force DM policy to open (channels login might have changed it)
-$PKG_MGR clawdbot config set channels.elyments.dm.policy open
-$PKG_MGR clawdbot config set channels.elyments.dm.enabled true
+# Force DM policy to open
+$PKG_MGR clawdbot config set channels.elyments.dm.policy open 2>/dev/null || true
+$PKG_MGR clawdbot config set channels.elyments.dm.enabled true 2>/dev/null || true
 
 echo ""
 echo "Step 4: Starting gateway..."
