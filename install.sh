@@ -68,10 +68,17 @@ fi
 cd "$ELYMENTS_DIR"
 $PKG_MGR install
 
-# Create config with elyments and google-antigravity enabled
+# Create config with elyments, google-antigravity, and default model
 mkdir -p "$HOME/.clawdbot"
 cat > "$CONFIG_FILE" << EOF
 {
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "google-antigravity/gemini-3-flash"
+      }
+    }
+  },
   "plugins": {
     "enabled": true,
     "load": {
@@ -126,11 +133,14 @@ if [ "$ANTIGRAVITY_AUTH" = "no" ]; then
     echo ""
     echo "Step 1: Setting up AI model (Google Antigravity)..."
     echo ""
-    $PKG_MGR clawdbot models auth login --provider google-antigravity --set-default
+    $PKG_MGR clawdbot models auth login --provider google-antigravity
 else
     echo ""
     echo "Step 1: Google Antigravity already configured, skipping..."
 fi
+
+# Set default model to gemini-3-flash
+$PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash 2>/dev/null || true
 
 # Check if Elyments is already logged in
 ELYMENTS_CREDS=$(ls "$HOME/.clawdbot/credentials/elyments"* 2>/dev/null | head -1)
