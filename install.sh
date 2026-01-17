@@ -120,5 +120,15 @@ echo ""
 $PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
-echo "Starting gateway..."
-$PKG_MGR clawdbot gateway
+echo "Starting gateway as daemon..."
+$PKG_MGR clawdbot daemon start
+
+echo ""
+echo "Gateway is running in the background!"
+echo ""
+echo "Useful commands:"
+echo "  ~/.clawdbot/clawdbot daemon status  - Check gateway status"
+echo "  ~/.clawdbot/clawdbot daemon stop    - Stop gateway"
+echo "  ~/.clawdbot/clawdbot daemon start   - Start gateway"
+echo "  ~/.clawdbot/clawdbot gateway        - Run gateway in foreground"
+echo ""
