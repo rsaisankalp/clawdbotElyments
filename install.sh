@@ -161,12 +161,21 @@ else
 fi
 
 echo ""
-echo "=== Step 4: Configuring DM policy ==="
+echo "=== Step 4: Select contacts for allowlist ==="
+echo ""
+# Run the allowlist configuration script
+cd "$ELYMENTS_DIR"
+npx tsx scripts/configure-allowlist.ts </dev/tty || {
+    echo "Note: Allowlist configuration skipped or failed. You can configure later."
+}
+
+echo ""
+echo "=== Step 5: Configuring DM policy ==="
 $PKG_MGR clawdbot config set channels.elyments.dm.policy open || true
 $PKG_MGR clawdbot config set channels.elyments.dm.enabled true || true
 
 echo ""
-echo "=== Step 5: Starting Gateway ==="
+echo "=== Step 6: Starting Gateway ==="
 echo ""
 
 # Kill any existing gateway (multiple methods for reliability)
