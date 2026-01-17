@@ -102,7 +102,7 @@ echo ""
 
 # Login to Elyments directly
 cd "$INSTALL_DIR"
-$PKG_MGR clawdbot channels login elyments
+$PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
 echo "Starting gateway..."
