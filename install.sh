@@ -105,11 +105,17 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
+
+# Enable google-antigravity-auth plugin (for Antigravity model option)
+echo "Enabling Google Antigravity plugin..."
+cd "$INSTALL_DIR"
+$PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
+
+echo ""
 echo "Starting configuration..."
 echo ""
 
 # Configure everything (AI model, Elyments login, etc.)
-cd "$INSTALL_DIR"
 $PKG_MGR clawdbot configure
 
 echo ""
