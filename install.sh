@@ -105,30 +105,22 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Step 1: Configure AI model..."
+echo "Starting configuration..."
 echo ""
 
-# Configure AI model (select provider and enter API key)
+# Configure everything (AI model, Elyments login, etc.)
 cd "$INSTALL_DIR"
-$PKG_MGR clawdbot agents add main
-
-echo ""
-echo "Step 2: Login to Elyments..."
-echo ""
-
-# Login to Elyments (config already has open DM policy)
-$PKG_MGR clawdbot channels login --channel elyments
+$PKG_MGR clawdbot configure
 
 echo ""
 echo "Starting gateway as daemon..."
 $PKG_MGR clawdbot daemon start
 
 echo ""
-echo "Gateway is running in the background!"
+echo "Done! Gateway is running in the background."
 echo ""
-echo "Useful commands:"
-echo "  ~/.clawdbot/clawdbot daemon status  - Check gateway status"
-echo "  ~/.clawdbot/clawdbot daemon stop    - Stop gateway"
-echo "  ~/.clawdbot/clawdbot daemon start   - Start gateway"
-echo "  ~/.clawdbot/clawdbot gateway        - Run gateway in foreground"
+echo "Commands:"
+echo "  ~/.clawdbot/clawdbot daemon status"
+echo "  ~/.clawdbot/clawdbot daemon stop"
+echo "  ~/.clawdbot/clawdbot daemon start"
 echo ""
