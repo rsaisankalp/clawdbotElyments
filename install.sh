@@ -112,28 +112,21 @@ cd "$INSTALL_DIR"
 $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 
 echo ""
+echo "Starting configuration..."
+echo ""
 
-# Check if running interactively
-if [ -t 0 ]; then
-    echo "Starting configuration..."
-    echo ""
-    # Configure everything (AI model, Elyments login, etc.)
-    $PKG_MGR clawdbot configure
+# Reconnect stdin to terminal for interactive prompts (needed when piped through curl)
+exec < /dev/tty
 
-    echo ""
-    echo "Starting gateway as daemon..."
-    $PKG_MGR clawdbot daemon start
+# Configure everything (AI model, Elyments login, etc.)
+$PKG_MGR clawdbot configure
 
-    echo ""
-    echo "Done! Gateway is running in the background."
-else
-    echo "Non-interactive mode detected."
-    echo ""
-    echo "To complete setup, run these commands:"
-    echo ""
-    echo "  cd ~/.clawdbot-app && pnpm clawdbot configure"
-    echo "  cd ~/.clawdbot-app && pnpm clawdbot daemon start"
-fi
+echo ""
+echo "Starting gateway as daemon..."
+$PKG_MGR clawdbot daemon start
+
+echo ""
+echo "Done! Gateway is running in the background."
 
 echo ""
 echo "Commands:"
