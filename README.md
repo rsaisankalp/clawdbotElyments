@@ -2,76 +2,104 @@
 
 AI-powered messaging bot for [Elyments](https://elyments.com) using [Clawdbot](https://github.com/clawdbot/clawdbot).
 
-## One-Command Install
+---
+
+## Quick Start (Elyments + Free AI)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/install.sh | bash
 ```
 
-**What it does:**
-1. Installs Clawdbot + Elyments plugin
-2. Sets up Google Antigravity (free Gemini API access)
-3. Logs you into Elyments via OTP
-4. Lets you select contacts from recent conversations
-5. Starts the gateway - ready to receive messages!
+This sets up everything automatically:
+- ✅ Clawdbot + Elyments plugin
+- ✅ Google Antigravity (free Gemini API)
+- ✅ Elyments login via OTP
+- ✅ Starts gateway immediately
 
-## After Installation
+**Perfect for:** Getting started quickly with Elyments and free AI.
 
-**Start gateway:**
-```bash
-~/.clawdbot/clawdbot gateway
-```
+---
 
-**Check status:**
-```bash
-~/.clawdbot/clawdbot status
-```
-
-**View logs:**
-```bash
-tail -f /tmp/clawdbot-gateway.log
-```
-
-## Configuration Utility
-
-For additional setup (more auth accounts, other channels, model changes):
+## Advanced Setup (All Providers & Channels)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
 ```
 
-This runs `clawdbot configure` - the official configuration wizard with all options:
-- Model providers (Anthropic, OpenAI, Google, etc.)
-- Channels (WhatsApp, Telegram, Discord, Slack, Elyments, etc.)
-- Gateway settings
-- And more as Clawdbot adds features
+Full configuration wizard with all options:
+
+**AI Providers:**
+- Anthropic (Claude Opus, Sonnet, Haiku)
+- OpenAI (GPT-4, Codex)
+- Google Antigravity (Gemini)
+- GitHub Copilot
+- And more...
+
+**Channels:**
+- WhatsApp
+- Telegram
+- Discord
+- Slack
+- Signal
+- iMessage
+- Elyments
+
+**Features:**
+- Multiple accounts per provider (auto-rotation on rate limits)
+- Custom model selection
+- DM policies per channel
+- Gateway management
+
+**Perfect for:** Power users, multiple providers, complex setups.
+
+---
+
+## After Installation
+
+```bash
+# Start gateway
+~/.clawdbot/clawdbot gateway
+
+# Check status
+~/.clawdbot/clawdbot status
+
+# View logs
+tail -f /tmp/clawdbot-gateway.log
+```
+
+---
 
 ## Features
 
-- **Free AI** - Uses Google Antigravity (Gemini) - no API costs
-- **Auto-rotation** - Multiple accounts rotate automatically on rate limits
-- **Direct Messages** - Configurable access (open, allowlist, pairing)
-- **Group Chats** - Respond when mentioned
-- **Media Support** - Send and receive images
-- **Typing Indicators** - Shows typing while generating response
+| Feature | Description |
+|---------|-------------|
+| **Free AI** | Google Antigravity = free Gemini access |
+| **Auto-rotation** | Multiple accounts rotate on rate limits |
+| **Multi-channel** | WhatsApp, Telegram, Discord, Slack, etc. |
+| **DM Control** | open, pairing, allowlist, or disabled |
+| **Media** | Send and receive images |
+| **Groups** | Respond when mentioned |
+
+---
 
 ## DM Policies
 
+```bash
+~/.clawdbot/clawdbot config set channels.elyments.dm.policy <policy>
+```
+
 | Policy | Description |
 |--------|-------------|
-| `open` | Accept messages from everyone |
-| `pairing` | Unknown senders get a pairing code (default) |
-| `allowlist` | Only accept from specific contacts |
+| `open` | Accept all messages |
+| `pairing` | Unknown senders get pairing code |
+| `allowlist` | Only specific contacts |
 | `disabled` | Ignore all DMs |
 
-Set via configure utility or:
-```bash
-~/.clawdbot/clawdbot config set channels.elyments.dm.policy open
-```
+---
 
 ## Configuration File
 
-Location: `~/.clawdbot/clawdbot.json`
+`~/.clawdbot/clawdbot.json`
 
 ```json
 {
@@ -87,90 +115,33 @@ Location: `~/.clawdbot/clawdbot.json`
       "enabled": true,
       "dm": {
         "enabled": true,
-        "policy": "open",
-        "allowFrom": ["*"]
+        "policy": "open"
       }
     }
   }
 }
 ```
 
-## Auth Rotation (Multiple Accounts)
-
-Add multiple Google accounts for automatic failover:
-
-```bash
-# Add another account
-cd ~/.clawdbot-app && pnpm clawdbot models auth login --provider google-antigravity
-
-# Or use the configure wizard
-curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
-```
-
-When one account hits rate limits, Clawdbot automatically switches to the next.
-
-## Manual Installation
-
-<details>
-<summary>Click to expand</summary>
-
-1. **Clone Clawdbot:**
-   ```bash
-   git clone https://github.com/clawdbot/clawdbot.git ~/.clawdbot-app
-   cd ~/.clawdbot-app && pnpm install
-   ```
-
-2. **Clone Elyments plugin:**
-   ```bash
-   git clone https://github.com/rsaisankalp/clawdbotElyments.git ~/.clawdbot-app/extensions/elyments
-   cd ~/.clawdbot-app/extensions/elyments && pnpm install
-   ```
-
-3. **Enable plugin in `~/.clawdbot/clawdbot.json`:**
-   ```json
-   {
-     "plugins": {
-       "enabled": true,
-       "load": {
-         "paths": ["~/.clawdbot-app/extensions/elyments"]
-       },
-       "entries": {
-         "google-antigravity-auth": {
-           "enabled": true
-         }
-       }
-     }
-   }
-   ```
-
-4. **Configure and run:**
-   ```bash
-   cd ~/.clawdbot-app
-   pnpm clawdbot plugins enable google-antigravity-auth
-   pnpm clawdbot models auth login --provider google-antigravity
-   pnpm clawdbot channels login --channel elyments
-   pnpm clawdbot gateway
-   ```
-
-</details>
+---
 
 ## Troubleshooting
 
-**Gateway won't start (port in use):**
 ```bash
+# Gateway port in use
 lsof -ti:18789 | xargs kill -9
 ~/.clawdbot/clawdbot gateway
-```
 
-**Re-login to Elyments:**
-```bash
+# Re-login Elyments
 ~/.clawdbot/clawdbot channels login --channel elyments
+
+# Re-auth Google Antigravity
+cd ~/.clawdbot-app && pnpm clawdbot models auth login --provider google-antigravity
+
+# Full reconfigure
+curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
 ```
 
-**Re-authenticate Google Antigravity:**
-```bash
-cd ~/.clawdbot-app && pnpm clawdbot models auth login --provider google-antigravity
-```
+---
 
 ## Requirements
 
@@ -178,10 +149,12 @@ cd ~/.clawdbot-app && pnpm clawdbot models auth login --provider google-antigrav
 - pnpm or npm
 - Git
 
+---
+
 ## Credits
 
-- [Clawdbot](https://github.com/clawdbot/clawdbot) - The bot framework
-- [elymentsApi](https://github.com/rsaisankalp/elymentsApi) - Elyments SDK
+- [Clawdbot](https://github.com/clawdbot/clawdbot)
+- [elymentsApi](https://github.com/rsaisankalp/elymentsApi)
 
 ## License
 
