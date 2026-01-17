@@ -156,11 +156,14 @@ echo ""
 echo "Step 4: Starting gateway..."
 echo ""
 
-# Start gateway as daemon
-$PKG_MGR clawdbot daemon start || {
-    echo "Daemon failed, trying direct gateway start..."
-    $PKG_MGR clawdbot gateway &
+# Install and start daemon, or fall back to direct gateway
+$PKG_MGR clawdbot daemon install 2>/dev/null || true
+$PKG_MGR clawdbot daemon start 2>/dev/null || {
+    echo "Daemon not available, starting gateway directly..."
+    cd "$INSTALL_DIR"
+    nohup $PKG_MGR clawdbot gateway > /tmp/clawdbot-gateway.log 2>&1 &
     sleep 5
+    echo "Gateway started (PID: $!)"
 }
 
 echo ""
