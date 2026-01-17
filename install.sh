@@ -116,15 +116,22 @@ echo "Enabling Google Antigravity plugin..."
 cd "$INSTALL_DIR"
 $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 
-echo ""
-echo "Starting configuration..."
-echo ""
-
 # Reconnect stdin to terminal for interactive prompts (needed when piped through curl)
 exec < /dev/tty
 
-# Configure everything (AI model, Elyments login, etc.)
-$PKG_MGR clawdbot configure
+echo ""
+echo "Step 1: Setting up AI model (Google Antigravity)..."
+echo ""
+
+# Login to Google Antigravity (this shows the plugin provider)
+$PKG_MGR clawdbot models auth login --provider google-antigravity --set-default
+
+echo ""
+echo "Step 2: Logging into Elyments..."
+echo ""
+
+# Login to Elyments channel
+$PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
 echo "Starting gateway as daemon..."
