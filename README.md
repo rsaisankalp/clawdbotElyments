@@ -11,33 +11,64 @@ Elyments channel plugin for [Clawdbot](https://github.com/clawdbot/clawdbot) - e
 - **Media Support** - Send and receive images/media
 - **Easy Configuration** - Select from recent chats when configuring allowlist
 
-## Installation
+## Quick Install (Recommended)
 
-1. Clone this repo into your Clawdbot extensions directory:
+One command to install Clawdbot + Elyments:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/install.sh | bash
+```
+
+This will:
+- Clone clawdbot to `~/.clawdbot-dev`
+- Clone elyments plugin into extensions
+- Install all dependencies
+- Create config with plugin enabled
+
+Then run:
+```bash
+~/.clawdbot-dev/clawdbot.sh configure
+# Select Channels → Elyments → Login with OTP
+
+~/.clawdbot-dev/clawdbot.sh gateway
+```
+
+## Manual Installation
+
+If you prefer manual setup:
+
+1. Clone clawdbot:
    ```bash
-   cd ~/.clawdbot/extensions  # or your preferred location
-   git clone https://github.com/rsaisankalp/clawdbotElyments.git elyments
-   cd elyments
+   git clone https://github.com/clawdbot/clawdbot.git ~/.clawdbot-dev
+   cd ~/.clawdbot-dev
    pnpm install
    ```
 
-2. Add to your `clawdbot.json`:
+2. Clone elyments plugin:
+   ```bash
+   git clone https://github.com/rsaisankalp/clawdbotElyments.git extensions/elyments
+   cd extensions/elyments
+   pnpm install
+   ```
+
+3. Add to `~/.clawdbot/clawdbot.json`:
    ```json
    {
      "plugins": {
        "enabled": true,
        "load": {
-         "paths": ["/path/to/elyments"]
+         "paths": ["~/.clawdbot-dev/extensions/elyments"]
        }
      }
    }
    ```
 
-3. Run the configuration wizard:
+4. Configure and run:
    ```bash
-   clawdbot configure
+   cd ~/.clawdbot-dev
+   pnpm clawdbot configure  # Select Channels → Elyments
+   pnpm clawdbot gateway
    ```
-   Select "Channels" → "Elyments" to login with OTP and configure settings.
 
 ## Configuration
 
