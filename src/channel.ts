@@ -1,13 +1,13 @@
-import type { ChannelPlugin } from "clawdbot/dist/channels/plugins/types.js";
+import type { ChannelPlugin } from "../../../src/channels/plugins/types.js";
 import {
   deleteAccountFromConfigSection,
   setAccountEnabledInConfigSection,
-} from "clawdbot/dist/channels/plugins/config-helpers.js";
-import { buildChannelConfigSchema } from "clawdbot/dist/channels/plugins/config-schema.js";
-import { formatPairingApproveHint } from "clawdbot/dist/channels/plugins/helpers.js";
-import { PAIRING_APPROVED_MESSAGE } from "clawdbot/dist/channels/plugins/pairing-message.js";
-import { applyAccountNameToChannelSection } from "clawdbot/dist/channels/plugins/setup-helpers.js";
-import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "clawdbot/dist/routing/session-key.js";
+} from "../../../src/channels/plugins/config-helpers.js";
+import { buildChannelConfigSchema } from "../../../src/channels/plugins/config-schema.js";
+import { formatPairingApproveHint } from "../../../src/channels/plugins/helpers.js";
+import { PAIRING_APPROVED_MESSAGE } from "../../../src/channels/plugins/pairing-message.js";
+import { applyAccountNameToChannelSection } from "../../../src/channels/plugins/setup-helpers.js";
+import { DEFAULT_ACCOUNT_ID, normalizeAccountId } from "../../../src/routing/session-key.js";
 
 import { ElymentsConfigSchema } from "./config-schema.js";
 import type { CoreConfig, ResolvedElymentsAccount } from "./types.js";
