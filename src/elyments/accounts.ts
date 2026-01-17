@@ -1,5 +1,5 @@
 import type { CoreConfig, ResolvedElymentsAccount, ElymentsChannelConfig } from "../types.js";
-import { DEFAULT_ACCOUNT_ID } from "../../../../src/routing/session-key.js";
+import { DEFAULT_ACCOUNT_ID } from "clawdbot/dist/routing/session-key.js";
 import { elymentsCredentialsExist, loadElymentsProfile } from "./credentials.js";
 
 export type { ResolvedElymentsAccount };

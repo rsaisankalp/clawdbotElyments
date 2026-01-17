@@ -1,4 +1,4 @@
-import type { ClawdbotConfig } from "../../../src/config/types.plugins.js";
+import type { ClawdbotConfig } from "clawdbot/dist/config/types.plugins.js";
 
 // Elyments session stored after authentication
 export type ElymentsSession = {
