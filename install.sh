@@ -68,7 +68,7 @@ fi
 cd "$ELYMENTS_DIR"
 $PKG_MGR install
 
-# Create config with elyments enabled
+# Create config with elyments and google-antigravity enabled
 mkdir -p "$HOME/.clawdbot"
 cat > "$CONFIG_FILE" << EOF
 {
@@ -76,6 +76,11 @@ cat > "$CONFIG_FILE" << EOF
     "enabled": true,
     "load": {
       "paths": ["$ELYMENTS_DIR"]
+    },
+    "entries": {
+      "google-antigravity-auth": {
+        "enabled": true
+      }
     }
   },
   "channels": {
