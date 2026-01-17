@@ -116,50 +116,38 @@ echo "Enabling Google Antigravity plugin..."
 cd "$INSTALL_DIR"
 $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 
-# Create setup script for interactive parts
-SETUP_SCRIPT="$HOME/.clawdbot/setup.sh"
-cat > "$SETUP_SCRIPT" << 'SETUP'
-#!/bin/bash
-set -e
-cd "$HOME/.clawdbot-app"
-
+# Interactive setup - run with terminal input
 echo ""
 echo "=== Step 1: Google Antigravity Login ==="
 echo ""
-pnpm clawdbot models auth login --provider google-antigravity
+$PKG_MGR clawdbot models auth login --provider google-antigravity </dev/tty
 
 echo ""
 echo "=== Step 2: Setting default model ==="
-pnpm clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash
+$PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash
 
 echo ""
 echo "=== Step 3: Elyments Login ==="
 echo ""
-pnpm clawdbot channels login --channel elyments
+$PKG_MGR clawdbot channels login --channel elyments </dev/tty
 
 echo ""
 echo "=== Step 4: Configuring DM policy ==="
-pnpm clawdbot config set channels.elyments.dm.policy open
-pnpm clawdbot config set channels.elyments.dm.enabled true
+$PKG_MGR clawdbot config set channels.elyments.dm.policy open
+$PKG_MGR clawdbot config set channels.elyments.dm.enabled true
 
 echo ""
 echo "=== Step 5: Starting Gateway ==="
 echo ""
-nohup pnpm clawdbot gateway > /tmp/clawdbot-gateway.log 2>&1 &
+cd "$INSTALL_DIR"
+nohup $PKG_MGR clawdbot gateway > /tmp/clawdbot-gateway.log 2>&1 &
 sleep 5
 
 echo ""
 echo "=== Setup Complete ==="
 echo "Gateway is running. Check logs: tail -f /tmp/clawdbot-gateway.log"
-SETUP
-chmod +x "$SETUP_SCRIPT"
-
 echo ""
-echo "=========================================="
-echo "Installation complete!"
+echo "Commands:"
+echo "  ~/.clawdbot/clawdbot gateway   # Start gateway"
+echo "  ~/.clawdbot/clawdbot status    # Check status"
 echo ""
-echo "Now run the setup script:"
-echo ""
-echo "  ~/.clawdbot/setup.sh"
-echo ""
-echo "=========================================="
