@@ -169,11 +169,15 @@ echo ""
 echo "=== Step 5: Starting Gateway ==="
 echo ""
 
-# Kill any existing gateway
-pkill -f "clawdbot.*gateway" 2>/dev/null || true
-sleep 2
-
+# Kill any existing gateway (multiple methods for reliability)
 cd "$INSTALL_DIR"
+$PKG_MGR clawdbot daemon stop 2>/dev/null || true
+pkill -f "clawdbot-gateway" 2>/dev/null || true
+pkill -f "tsx.*gateway" 2>/dev/null || true
+# Kill any process on port 18789
+lsof -ti:18789 | xargs kill -9 2>/dev/null || true
+sleep 3
+
 nohup $PKG_MGR clawdbot gateway > /tmp/clawdbot-gateway.log 2>&1 &
 GATEWAY_PID=$!
 sleep 5
