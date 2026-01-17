@@ -8,6 +8,7 @@ INSTALL_DIR="$HOME/.clawdbot-app"
 ELYMENTS_REPO="https://github.com/rsaisankalp/clawdbotElyments.git"
 CLAWDBOT_REPO="https://github.com/clawdbot/clawdbot.git"
 CONFIG_FILE="$HOME/.clawdbot/clawdbot.json"
+AUTH_FILE="$HOME/.clawdbot/agents/main/agent/auth-profiles.json"
 
 echo "Installing Clawdbot with Elyments plugin..."
 echo ""
@@ -61,9 +62,11 @@ fi
 cd "$ELYMENTS_DIR"
 $PKG_MGR install
 
-# Create config with elyments, google-antigravity, and default model
+# Create config only if it doesn't exist
 mkdir -p "$HOME/.clawdbot"
-cat > "$CONFIG_FILE" << EOF
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Creating initial config..."
+    cat > "$CONFIG_FILE" << EOF
 {
   "agents": {
     "defaults": {
@@ -98,6 +101,14 @@ cat > "$CONFIG_FILE" << EOF
   }
 }
 EOF
+else
+    echo "Config exists, updating plugin paths..."
+    cd "$INSTALL_DIR"
+    $PKG_MGR clawdbot config set plugins.enabled true 2>/dev/null || true
+    $PKG_MGR clawdbot config set channels.elyments.enabled true 2>/dev/null || true
+    $PKG_MGR clawdbot config set channels.elyments.dm.policy open 2>/dev/null || true
+    $PKG_MGR clawdbot config set channels.elyments.dm.enabled true 2>/dev/null || true
+fi
 
 # Create command wrapper
 CLAWDBOT_CMD="$HOME/.clawdbot/clawdbot"
@@ -116,35 +127,69 @@ echo "Enabling Google Antigravity plugin..."
 cd "$INSTALL_DIR"
 $PKG_MGR clawdbot plugins enable google-antigravity-auth 2>/dev/null || true
 
-# Interactive setup - run with terminal input
+# Check if Google Antigravity is already configured
 echo ""
 echo "=== Step 1: Google Antigravity Login ==="
-echo ""
-$PKG_MGR clawdbot models auth login --provider google-antigravity </dev/tty
+if [ -f "$AUTH_FILE" ] && grep -q "google-antigravity" "$AUTH_FILE" 2>/dev/null; then
+    echo "Google Antigravity already configured, skipping..."
+else
+    echo ""
+    $PKG_MGR clawdbot models auth login --provider google-antigravity </dev/tty || {
+        echo "Error: Google Antigravity login failed."
+        exit 1
+    }
+fi
 
 echo ""
 echo "=== Step 2: Setting default model ==="
-$PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash
+$PKG_MGR clawdbot config set agents.defaults.model.primary google-antigravity/gemini-3-flash || {
+    echo "Error: Failed to set default model."
+    exit 1
+}
 
+# Check if Elyments is already logged in
 echo ""
 echo "=== Step 3: Elyments Login ==="
-echo ""
-$PKG_MGR clawdbot channels login --channel elyments </dev/tty
+if ls "$HOME/.clawdbot/credentials/elyments"* &>/dev/null; then
+    echo "Elyments already logged in, skipping..."
+else
+    echo ""
+    $PKG_MGR clawdbot channels login --channel elyments </dev/tty || {
+        echo "Error: Elyments login failed."
+        exit 1
+    }
+fi
 
 echo ""
 echo "=== Step 4: Configuring DM policy ==="
-$PKG_MGR clawdbot config set channels.elyments.dm.policy open
-$PKG_MGR clawdbot config set channels.elyments.dm.enabled true
+$PKG_MGR clawdbot config set channels.elyments.dm.policy open || true
+$PKG_MGR clawdbot config set channels.elyments.dm.enabled true || true
 
 echo ""
 echo "=== Step 5: Starting Gateway ==="
 echo ""
+
+# Kill any existing gateway
+pkill -f "clawdbot.*gateway" 2>/dev/null || true
+sleep 2
+
 cd "$INSTALL_DIR"
 nohup $PKG_MGR clawdbot gateway > /tmp/clawdbot-gateway.log 2>&1 &
+GATEWAY_PID=$!
 sleep 5
+
+# Check if gateway started
+if ps -p $GATEWAY_PID > /dev/null 2>&1; then
+    echo "Gateway started successfully (PID: $GATEWAY_PID)"
+else
+    echo "Error: Gateway failed to start. Check /tmp/clawdbot-gateway.log"
+    tail -20 /tmp/clawdbot-gateway.log 2>/dev/null || true
+    exit 1
+fi
 
 echo ""
 echo "=== Setup Complete ==="
+echo ""
 echo "Gateway is running. Check logs: tail -f /tmp/clawdbot-gateway.log"
 echo ""
 echo "Commands:"
