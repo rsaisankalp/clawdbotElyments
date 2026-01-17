@@ -20,28 +20,30 @@ curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/i
 ```
 
 This will:
-- Install clawdbot via `npm i -g clawdbot`
-- Clone elyments plugin to `~/.clawdbot/extensions/elyments`
-- Install plugin dependencies
+- Clone clawdbot to `~/.clawdbot-app`
+- Clone elyments plugin
+- Install all dependencies
 - Create config with plugin enabled
 - Launch configuration wizard (login with OTP)
 - Start the gateway
 
+After install, run gateway anytime:
+```bash
+~/.clawdbot/clawdbot gateway
+```
+
 ## Manual Installation
 
-If you prefer manual setup:
-
-1. Install clawdbot:
+1. Clone clawdbot:
    ```bash
-   npm i -g clawdbot
+   git clone https://github.com/clawdbot/clawdbot.git ~/.clawdbot-app
+   cd ~/.clawdbot-app && pnpm install
    ```
 
 2. Clone elyments plugin:
    ```bash
-   mkdir -p ~/.clawdbot/extensions
-   git clone https://github.com/rsaisankalp/clawdbotElyments.git ~/.clawdbot/extensions/elyments
-   cd ~/.clawdbot/extensions/elyments
-   npm install
+   git clone https://github.com/rsaisankalp/clawdbotElyments.git ~/.clawdbot-app/extensions/elyments
+   cd ~/.clawdbot-app/extensions/elyments && pnpm install
    ```
 
 3. Add to `~/.clawdbot/clawdbot.json`:
@@ -50,7 +52,7 @@ If you prefer manual setup:
      "plugins": {
        "enabled": true,
        "load": {
-         "paths": ["~/.clawdbot/extensions/elyments"]
+         "paths": ["~/.clawdbot-app/extensions/elyments"]
        }
      }
    }
@@ -58,8 +60,9 @@ If you prefer manual setup:
 
 4. Configure and run:
    ```bash
-   clawdbot configure  # Select Channels → Elyments → Login with OTP
-   clawdbot gateway
+   cd ~/.clawdbot-app
+   pnpm clawdbot configure  # Select Channels → Elyments → Login with OTP
+   pnpm clawdbot gateway
    ```
 
 ## Configuration
