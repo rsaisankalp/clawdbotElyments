@@ -1,4 +1,4 @@
-import type { ClawdbotPluginApi } from "../../src/plugins/types.js";
+import type { ClawdbotPluginApi } from "clawdbot/dist/plugins/types.js";
 
 import { elymentsPlugin } from "./src/channel.js";
 
