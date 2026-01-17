@@ -134,8 +134,23 @@ echo ""
 $PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
-echo "Starting gateway as daemon..."
-$PKG_MGR clawdbot daemon start
+echo "Step 3: Ensuring DM policy is set to 'open'..."
+echo ""
+
+# Force DM policy to open (channels login might have changed it)
+$PKG_MGR clawdbot config set channels.elyments.dm.policy open
+$PKG_MGR clawdbot config set channels.elyments.dm.enabled true
+
+echo ""
+echo "Step 4: Starting gateway..."
+echo ""
+
+# Start gateway as daemon
+$PKG_MGR clawdbot daemon start || {
+    echo "Daemon failed, trying direct gateway start..."
+    $PKG_MGR clawdbot gateway &
+    sleep 5
+}
 
 echo ""
 echo "Done! Gateway is running in the background."
