@@ -13,24 +13,23 @@ Elyments channel plugin for [Clawdbot](https://github.com/clawdbot/clawdbot) - e
 
 ## Quick Install (Recommended)
 
-One command to install Clawdbot + Elyments:
+One command to install, configure, and run:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/install.sh | bash
 ```
 
 This will:
-- Clone clawdbot to `~/.clawdbot-dev`
+- Clone clawdbot to `~/.clawdbot-src`
 - Clone elyments plugin into extensions
 - Install all dependencies
 - Create config with plugin enabled
+- Launch configuration wizard (login with OTP)
+- Optionally start the gateway
 
-Then run:
+After install, run gateway anytime:
 ```bash
-~/.clawdbot-dev/clawdbot.sh configure
-# Select Channels → Elyments → Login with OTP
-
-~/.clawdbot-dev/clawdbot.sh gateway
+~/.clawdbot/clawdbot gateway
 ```
 
 ## Manual Installation
@@ -39,8 +38,8 @@ If you prefer manual setup:
 
 1. Clone clawdbot:
    ```bash
-   git clone https://github.com/clawdbot/clawdbot.git ~/.clawdbot-dev
-   cd ~/.clawdbot-dev
+   git clone https://github.com/clawdbot/clawdbot.git ~/.clawdbot-src
+   cd ~/.clawdbot-src
    pnpm install
    ```
 
@@ -57,7 +56,7 @@ If you prefer manual setup:
      "plugins": {
        "enabled": true,
        "load": {
-         "paths": ["~/.clawdbot-dev/extensions/elyments"]
+         "paths": ["~/.clawdbot-src/extensions/elyments"]
        }
      }
    }
@@ -65,8 +64,8 @@ If you prefer manual setup:
 
 4. Configure and run:
    ```bash
-   cd ~/.clawdbot-dev
-   pnpm clawdbot configure  # Select Channels → Elyments
+   cd ~/.clawdbot-src
+   pnpm clawdbot configure  # Select Channels → Elyments → Login with OTP
    pnpm clawdbot gateway
    ```
 
