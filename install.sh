@@ -105,12 +105,12 @@ chmod +x "$CLAWDBOT_CMD"
 echo ""
 echo "Installation complete!"
 echo ""
-echo "Starting Elyments configuration..."
+echo "Starting Elyments login..."
 echo ""
 
-# Configure Elyments (includes login + settings like recent chats selection)
+# Login to Elyments (config already has open DM policy)
 cd "$INSTALL_DIR"
-$PKG_MGR clawdbot configure
+$PKG_MGR clawdbot channels login --channel elyments
 
 echo ""
 echo "Starting gateway..."
