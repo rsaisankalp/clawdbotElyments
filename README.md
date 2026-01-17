@@ -40,12 +40,11 @@ For additional setup (more auth accounts, other channels, model changes):
 curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
 ```
 
-**Options available:**
-- Add multiple Google Antigravity accounts (auto-rotation on rate limits)
-- Configure other channels (WhatsApp, Telegram, Discord, Slack)
-- Set default AI model
-- Configure DM policies
-- Manage gateway (start/stop/restart)
+This runs `clawdbot configure` - the official configuration wizard with all options:
+- Model providers (Anthropic, OpenAI, Google, etc.)
+- Channels (WhatsApp, Telegram, Discord, Slack, Elyments, etc.)
+- Gateway settings
+- And more as Clawdbot adds features
 
 ## Features
 
@@ -100,10 +99,13 @@ Location: `~/.clawdbot/clawdbot.json`
 
 Add multiple Google accounts for automatic failover:
 
-1. Run configure utility
-2. Select "Configure Auth Providers"
-3. Add accounts via OAuth
-4. Set rotation order (optional)
+```bash
+# Add another account
+cd ~/.clawdbot-app && pnpm clawdbot models auth login --provider google-antigravity
+
+# Or use the configure wizard
+curl -fsSL https://raw.githubusercontent.com/rsaisankalp/clawdbotElyments/main/configure.sh | bash
+```
 
 When one account hits rate limits, Clawdbot automatically switches to the next.
 
